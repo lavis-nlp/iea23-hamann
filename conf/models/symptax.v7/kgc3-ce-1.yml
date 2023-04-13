@@ -1,0 +1,60 @@
+#
+#   single sentence multiclass classifier
+#
+#   set automatically:
+#     - out_dir
+#     - dataset_dir
+#     - trainer.fast_dev_run
+
+name: v7-kgc3-ce1-m0.5
+
+transformer: bert-base-german-cased
+source: symptax.v7
+graph: symptax.v7
+
+scheduler: constant
+scheduler_kwargs: {}
+trainer:
+  gpus: 1
+  max_steps: 500000
+checkpoint:
+  every_n_epochs: 1
+  mode: max
+  monitor: validation/f1/micro/tail
+  save_last: true
+  save_top_k: 1
+
+model: joint kgc 3 ce 1
+model_kwargs:
+  embedding:
+    dimensions: 500
+    initialization: normal
+    initialization_kwargs:
+      mean: 0.0
+      std: 1.0
+
+loss: cross entropy
+loss_kwargs:
+  reduction: mean
+optimizer: adam
+optimizer_kwargs:
+  lr: 1.0e-05
+
+sampler: weighted random
+sampler_kwargs:
+  replacement: true
+  num_samples: 60000
+train_dataset: graph selective
+train_dataset_kwargs:
+  mode: sometimes masked
+  mask_prob: 0.5
+train_loader:
+  batch_size: 20
+
+valid_dataset: graph exhaustive
+valid_dataset_kwargs:
+  mode: not masked
+  max_per_edge: 500
+valid_loader:
+  batch_size: 30
+  shuffle: false

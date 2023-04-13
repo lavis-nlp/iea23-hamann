@@ -1,0 +1,62 @@
+#
+#   single sentence multiclass classifier
+#     trained with negative sampling
+#
+#   set automatically:
+#     - out_dir
+#     - dataset_dir
+#     - trainer.fast_dev_run
+
+name: v7-kgc3-ns1-m0.5
+
+transformer: bert-base-german-cased
+source: symptax.v7
+graph: symptax.v7
+
+trainer:
+  gpus: 1
+  max_steps: 500000
+checkpoint:
+  every_n_epochs: 1
+  mode: max
+  monitor: validation/f1/micro/tail
+  save_last: true
+  save_top_k: 1
+
+model: joint kgc 3 ns 1
+model_kwargs:
+  embedding:
+    dimensions: 500
+    initialization: normal
+    initialization_kwargs:
+      mean: 0.0
+      std: 0.5
+
+loss: binary cross entropy
+loss_kwargs: {}
+
+# ---
+
+optimizer: adam
+optimizer_kwargs:
+  lr: 1.0e-05
+
+sampler: weighted random
+sampler_kwargs:
+  replacement: true
+  num_samples: 60000
+train_dataset: graph negative heads
+train_dataset_kwargs:
+  mode: sometimes masked
+  mask_prob: 0.5
+  num_negatives: 4
+train_loader:
+  batch_size: 4  # batch_size * (1 positive + num_negatives)
+
+valid_dataset: graph exhaustive
+valid_dataset_kwargs:
+  mode: not masked
+  max_per_edge: 500
+valid_loader:
+  batch_size: 30
+  shuffle: false

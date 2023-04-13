@@ -1,0 +1,4 @@
+crossvalidation:
+  k: 5
+  n: 40
+  seed: 27021990
