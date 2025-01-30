@@ -23,5 +23,15 @@ Entry points:
 If you find this work interesting, please consider a citation
 
 ```
-Coming soon
+@inproceedings{hamann2023domain,
+  author =       {Hamann, Felix and Ulges, Adrian},
+  title =        {Domain-Specific Knowledge Graph Adaption with
+                  Industrial Text Data},
+  booktitle =    {International Conference on Industrial, Engineering
+                  and Other Applications of Applied Intelligent
+                  Systems},
+  year =         2023,
+  pages =        {281--293},
+  organization = {Springer},
+}
 ```
